@@ -1,6 +1,4 @@
-import java.sql.Connection;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +12,7 @@ public class Database {
 static Connection con = Connect.connect();
 static String sql ="";
 private static final int NULL = 0;
+static ErrorPage errorPage = new ErrorPage();
 public static boolean AddUser(String name, int password) throws SQLException {
     try{
     Statement st = con.createStatement();
@@ -37,42 +36,42 @@ public static boolean LoginUser(int ID, int password){
         sql = "select Password from Data where ID='"+ ID + "'";
         PreparedStatement st = con.prepareStatement(sql);
         ResultSet rs = st.executeQuery();
-        int DPassword = rs.getInt("Password");
-        if(password == DPassword){
-
-            return true;
-        }
-        else {
-            return false;
-        }
+        if(rs !=null) {
+            int DPassword = rs.getInt("Password");
+            if (password == DPassword) {return true;}
+            else {return false;}
+        }else{
+            errorPage.setVisible(true);
+            JLabel dbError = new JLabel("This ID is not registered in our systems");
+            errorPage.getContentPane().add(dbError);;
+            return false;}
     } catch (SQLException e) {
+        errorPage.setVisible(true);
+        JLabel wel_label = new JLabel("This ID is not registered in our systems");
+        errorPage.getContentPane().add(wel_label);;
+        System.out.println("Please enter a valid ID");
         throw new RuntimeException(e);
     }
 }
-public static CurrentUser CreateSession(int ID) throws SQLException {
-    String name = "";
-    int balance = 0;
-    int currentID = 0;
-    int bills = 0;
-    int debt = 0;
-    List<CurrentUserCards> cardList = new ArrayList<>();
+public static void CreateSession(int ID) throws SQLException {
+
     Statement st = con.createStatement();
     ResultSet result = st.executeQuery("SELECT * FROM Data where ID='" + ID + "'");
 
     while (result.next()) {
-        currentID = result.getInt("ID");
-        name = (result.getString("Name"));
-        balance = (result.getInt("Balance"));
-        bills = result.getInt("Bills");
-        debt = result.getInt("Debt");
+        CurrentUser.id = result.getInt("ID");
+        CurrentUser.name = (result.getString("Name"));
+        CurrentUser.balance = (result.getInt("Balance"));
+        CurrentUser.bills = result.getInt("Bills");
+        CurrentUser.debt = result.getInt("Debt");
     }
+
     ResultSet Cards = st.executeQuery("SELECT * FROM Cards where OwnerID ='"+ID+"'");
     while(Cards.next()){
         int CardID = Cards.getInt("CardID");
         int CardBalance = Cards.getInt("CardBalance");
         int OwnerID = Cards.getInt("OwnerID");
-        cardList.add(new CurrentUserCards(CardID,CardBalance,OwnerID));
+        CurrentUser.UserCards.add(new CurrentUserCards(CardID,CardBalance,OwnerID));
     }
-    return new CurrentUser(name, currentID, balance, debt, bills,cardList);
 }
 }

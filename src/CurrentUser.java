@@ -4,23 +4,36 @@ import java.util.List;
 public class CurrentUser {
    static String name;
    static int id;
-    int balance;
-    int owe;
-    int gonnaGet;
-    List<CurrentUserCards> UserCards;
-    private static void GetMoney(){
-
-    }
-    private static void GiveMoney(){
-
+   static int balance;
+   static int debt;
+   static int bills;
+   static List<CurrentUserCards> UserCards = new ArrayList<>();
+   public static void GetLoan(int amount){
+        CurrentUser.debt += amount;
+        CurrentUser.setBalance(CurrentUser.balance+amount);
     }
 
-    public CurrentUser(String name, int id, int balance, int owe, int gonnaGet, List<CurrentUserCards> UserCards) {
-        this.name = name;
-        this.id = id;
-        this.balance = balance;
-        this.owe = owe;
-        this.gonnaGet = gonnaGet;
-        this.UserCards = UserCards;
+    public static int getBalance() {
+        return balance;
+    }
+
+    public static void setBalance(int balance) {
+        CurrentUser.balance = balance;
+    }
+
+    public static int getDebt() {
+        return debt;
+    }
+
+    public static void setDebt(int debt) {
+        CurrentUser.debt = debt;
+    }
+
+    public static int getBills() {
+        return bills;
+    }
+
+    public static void setBills(int bills) {
+        CurrentUser.bills = bills;
     }
 }

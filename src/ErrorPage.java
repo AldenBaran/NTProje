@@ -2,10 +2,10 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-class NewPage extends JFrame implements ActionListener
+class ErrorPage extends JFrame implements ActionListener
 {
     //constructor  
-    NewPage()
+    ErrorPage()
     {
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Logged in");

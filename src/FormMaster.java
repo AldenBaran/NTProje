@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 class FormMaster extends JFrame implements ActionListener {
     //initialize button, panel, label, and text field
+    static FormMaster form;
     JButton b1;
     JPanel newPanel;
     JLabel userLabel, passLabel;
@@ -55,35 +56,36 @@ class FormMaster extends JFrame implements ActionListener {
         int pass = Integer.parseInt(textField2.getText());        //get user entered pasword from the textField2
         //check whether the credentials are authentic or not
         if (Database.LoginUser(ID,pass)) {  //if authentic, navigate user to a new page
-
-
-              CurrentUser Dude;
             try {
-                Dude = Database.CreateSession(ID);
+                Database.CreateSession(ID);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-            JFrame frame = new JFrame();
-            JPanel loggedPanel = new JPanel(new GridLayout(3, 1));
-
-            add(loggedPanel, BorderLayout.CENTER);
-            JLabel wel_label = new JLabel("Welcome: "+Dude.name);
-            JLabel balance_label = new JLabel("Your current balance: "+Dude.balance);
-            loggedPanel.setSize(400,200);
-
-            loggedPanel.add(wel_label);
-            loggedPanel.add(balance_label);
-            frame.setSize(500,300);
-            frame.add(loggedPanel);
-            frame.setVisible(true);
-            loggedPanel.setVisible(true);
+            UserPanel userPanel = new UserPanel();
+            form.setVisible(false);
         }
         else{
-            NewPage page = new NewPage();
+            ErrorPage page = new ErrorPage();
             page.setVisible(true);
             JLabel wel_label = new JLabel("Wrong Password or ID");
             page.getContentPane().add(wel_label);;
         }
+
+    }
+    public static void main(String[] args) {
+        try
+        {
+            form = new FormMaster();
+            form.setSize(300,100);
+            form.setVisible(true);
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+
+    }
+    static void UserPanelReset(){
 
     }
 }
